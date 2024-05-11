@@ -1,20 +1,21 @@
-const crypto = require("crypto");
-const zlib = require("zlib");
-const fs = require("fs");
-const path = require("path");
+import * as crypto from "crypto";
+import * as zlib from "zlib";
+import * as fs from "fs";
 
-class InkriptoGuard {
+class InkriptGuard {
+  private key: Buffer;
+
   constructor() {
     this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key
   }
 
   // Function to generate a random IV
-  generateIV() {
+  private generateIV(): Buffer {
     return crypto.randomBytes(16); // IV is 16 bytes for AES
   }
 
   // Preprocess data with compression and a unique transformation for non-binary data
-  preprocessData(data) {
+  private preprocessData(data: any): string {
     if (this.isFilePath(data)) {
       const fileBuffer = fs.readFileSync(data);
       return fileBuffer.toString("base64"); // Keep file content as base64
@@ -32,7 +33,7 @@ class InkriptoGuard {
   }
 
   // Reverse preprocessing considering the binary nature of certain data
-  reversePreprocessData(compressedData, isBinary = false) {
+  private reversePreprocessData(compressedData: string, isBinary: boolean = false): string | Buffer {
     try {
       const bufferData = Buffer.from(compressedData, "base64");
       if (isBinary) {
@@ -47,7 +48,7 @@ class InkriptoGuard {
   }
 
   // Decrypt data with consideration for its type (binary vs. textual)
-  async decryptData(encryptedPackage) {
+  public async decryptData(encryptedPackage: any): Promise<any> {
     try {
       if (typeof encryptedPackage === "object" && encryptedPackage !== null) {
         if ("encryptedData" in encryptedPackage) {
@@ -63,16 +64,12 @@ class InkriptoGuard {
 
           // Check if it's binary using an explicit flag
           const isBinary = encryptedPackage.isBinary || false;
-          if (isBinary) {
-            return decrypted.toString("hex"); // Return as hex string for binary data
-          } else {
-            return this.reversePreprocessData(
-              decrypted.toString("utf8"),
-              isBinary
-            );
-          }
+          return this.reversePreprocessData(
+            decrypted.toString("utf8"),
+            isBinary
+          );
         } else {
-          const result = Array.isArray(encryptedPackage) ? [] : {};
+          const result: Record<string, any> = Array.isArray(encryptedPackage) ? [] : {};
           for (const [key, value] of Object.entries(encryptedPackage)) {
             result[key] = await this.decryptData(value);
           }
@@ -88,7 +85,7 @@ class InkriptoGuard {
   }
 
   // Check if the input is a file path
-  isFilePath(data) {
+  private isFilePath(data: string): boolean {
     return (
       typeof data === "string" &&
       fs.existsSync(data) &&
@@ -97,7 +94,7 @@ class InkriptoGuard {
   }
 
   // Unified encryption method for all data types
-  async encryptData(data) {
+  public async encryptData(data: any): Promise<any> {
     const iv = this.generateIV(); // Generate a new IV for each encryption
     try {
       if (this.isFilePath(data)) {
@@ -114,7 +111,7 @@ class InkriptoGuard {
       } else if (Array.isArray(data)) {
         return Promise.all(data.map((item) => this.encryptData(item)));
       } else if (typeof data === "object" && data !== null) {
-        const result = {};
+        const result: Record<string, any> = {};
         for (const [key, value] of Object.entries(data)) {
           result[key] = await this.encryptData(value);
         }
@@ -138,4 +135,4 @@ class InkriptoGuard {
   }
 }
 
-module.exports = { InkriptoGuard };
+export { InkriptGuard };

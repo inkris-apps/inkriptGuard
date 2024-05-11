@@ -46,47 +46,6 @@ class InkriptoGuard {
     }
   }
 
-  // Decrypt data with consideration for its type (binary vs. textual)
-  async decryptData(encryptedPackage) {
-    try {
-      if (typeof encryptedPackage === "object" && encryptedPackage !== null) {
-        if ("encryptedData" in encryptedPackage) {
-          const { encryptedData, authTag, iv } = encryptedPackage;
-          const decipher = crypto.createDecipheriv(
-            "aes-256-gcm",
-            this.key,
-            Buffer.from(iv, "base64")
-          );
-          decipher.setAuthTag(Buffer.from(authTag, "base64"));
-          let decrypted = decipher.update(encryptedData, "base64");
-          decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-          // Check if it's binary using an explicit flag
-          const isBinary = encryptedPackage.isBinary || false;
-          if (isBinary) {
-            return decrypted.toString("hex"); // Return as hex string for binary data
-          } else {
-            return this.reversePreprocessData(
-              decrypted.toString("utf8"),
-              isBinary
-            );
-          }
-        } else {
-          const result = Array.isArray(encryptedPackage) ? [] : {};
-          for (const [key, value] of Object.entries(encryptedPackage)) {
-            result[key] = await this.decryptData(value);
-          }
-          return result;
-        }
-      } else {
-        return encryptedPackage;
-      }
-    } catch (error) {
-      console.error("Decryption failed:", error);
-      return null;
-    }
-  }
-
   // Check if the input is a file path
   isFilePath(data) {
     return (
@@ -136,6 +95,50 @@ class InkriptoGuard {
       return null;
     }
   }
+
+
+
+  // Unified Decrypt data with consideration for its type (binary vs. textual)
+  async decryptData(encryptedPackage) {
+    try {
+      if (typeof encryptedPackage === "object" && encryptedPackage !== null) {
+        if ("encryptedData" in encryptedPackage) {
+          const { encryptedData, authTag, iv } = encryptedPackage;
+          const decipher = crypto.createDecipheriv(
+            "aes-256-gcm",
+            this.key,
+            Buffer.from(iv, "base64")
+          );
+          decipher.setAuthTag(Buffer.from(authTag, "base64"));
+          let decrypted = decipher.update(encryptedData, "base64");
+          decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+          // Check if it's binary using an explicit flag
+          const isBinary = encryptedPackage.isBinary || false;
+          if (isBinary) {
+            return decrypted.toString("hex"); // Return as hex string for binary data
+          } else {
+            return this.reversePreprocessData(
+              decrypted.toString("utf8"),
+              isBinary
+            );
+          }
+        } else {
+          const result = Array.isArray(encryptedPackage) ? [] : {};
+          for (const [key, value] of Object.entries(encryptedPackage)) {
+            result[key] = await this.decryptData(value);
+          }
+          return result;
+        }
+      } else {
+        return encryptedPackage;
+      }
+    } catch (error) {
+      console.error("Decryption failed:", error);
+      return null;
+    }
+  }
+
 }
 
 module.exports = { InkriptoGuard };
