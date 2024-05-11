@@ -1,0 +1,14 @@
+{
+  "name": "inkripto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "InkriptoGuard.test.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^29.7.0"
+  }
+}
