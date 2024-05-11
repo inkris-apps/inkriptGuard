@@ -48,7 +48,7 @@ class InkriptGuard {
   }
 
   // Decrypt data with consideration for its type (binary vs. textual)
-  public async decryptData(encryptedPackage: any): Promise<any> {
+  public async decrypt(encryptedPackage: any): Promise<any> {
     try {
       if (typeof encryptedPackage === "object" && encryptedPackage !== null) {
         if ("encryptedData" in encryptedPackage) {
@@ -71,7 +71,7 @@ class InkriptGuard {
         } else {
           const result: Record<string, any> = Array.isArray(encryptedPackage) ? [] : {};
           for (const [key, value] of Object.entries(encryptedPackage)) {
-            result[key] = await this.decryptData(value);
+            result[key] = await this.decrypt(value);
           }
           return result;
         }
@@ -94,7 +94,7 @@ class InkriptGuard {
   }
 
   // Unified encryption method for all data types
-  public async encryptData(data: any): Promise<any> {
+  public async encrypt(data: any): Promise<any> {
     const iv = this.generateIV(); // Generate a new IV for each encryption
     try {
       if (this.isFilePath(data)) {
@@ -109,11 +109,11 @@ class InkriptGuard {
           isBinary: true,
         };
       } else if (Array.isArray(data)) {
-        return Promise.all(data.map((item) => this.encryptData(item)));
+        return Promise.all(data.map((item) => this.encrypt(item)));
       } else if (typeof data === "object" && data !== null) {
         const result: Record<string, any> = {};
         for (const [key, value] of Object.entries(data)) {
-          result[key] = await this.encryptData(value);
+          result[key] = await this.encrypt(value);
         }
         return result;
       } else {

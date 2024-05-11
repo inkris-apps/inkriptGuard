@@ -28,13 +28,13 @@ const inkriptGuard = new InkriptGuard();
 
 ## Encrypting Data
 
-You can encrypt strings, numbers, objects, arrays, and file contents. Here’s how to use the `encryptData` method:
+You can encrypt strings, numbers, objects, arrays, and file contents. Here’s how to use the `encrypt` method:
 
 ### Encrypting Text
 
 ```typescript
 async function encryptText() {
-  const encrypted = await inkriptGuard.encryptData("Hello, world!");
+  const encrypted = await inkriptGuard.encrypt("Hello, world!");
   console.log("Encrypted Text:", encrypted);
 }
 encryptText();
@@ -48,7 +48,7 @@ async function encryptObject() {
     name: "Alice",
     age: 30
   };
-  const encrypted = await inkriptGuard.encryptData(data);
+  const encrypted = await inkriptGuard.encrypt(data);
   console.log("Encrypted Object:", encrypted);
 }
 encryptObject();
@@ -61,7 +61,7 @@ For file encryption, pass the path of the file. Ensure the file exists at the sp
 ```typescript
 async function encryptFile() {
   const filePath = '/path/to/your/file.txt';
-  const encrypted = await inkriptGuard.encryptData(filePath);
+  const encrypted = await inkriptGuard.encrypt(filePath);
   console.log("Encrypted File:", encrypted);
 }
 encryptFile();
@@ -69,13 +69,13 @@ encryptFile();
 
 ## Decrypting Data
 
-Use the `decryptData` method to decrypt data that was encrypted using `InkriptGuard`. Ensure the input to this method matches the structure returned by `encryptData`.
+Use the `decrypt` method to decrypt data that was encrypted using `InkriptGuard`. Ensure the input to this method matches the structure returned by `encrypt`.
 
 ### Decrypting Text
 
 ```typescript
 async function decryptText(encryptedData) {
-  const decrypted = await inkriptGuard.decryptData(encryptedData);
+  const decrypted = await inkriptGuard.decrypt(encryptedData);
   console.log("Decrypted Text:", decrypted);
 }
 ```
@@ -84,7 +84,7 @@ async function decryptText(encryptedData) {
 
 ```typescript
 async function decryptObject(encryptedData) {
-  const decrypted = await inkriptGuard.decryptData(encryptedData);
+  const decrypted = await inkriptGuard.decrypt(encryptedData);
   console.log("Decrypted Object:", decrypted);
 }
 ```
@@ -95,7 +95,7 @@ When decrypting files, the output will be a buffer or a hexadecimal string if th
 
 ```typescript
 async function decryptFile(encryptedData) {
-  const decrypted = await inkriptGuard.decryptData(encryptedData);
+  const decrypted = await inkriptGuard.decrypt(encryptedData);
   console.log("Decrypted File Content (Buffer):", decrypted);
   // If 'document' exists in the decrypted object and is a string,
   // convert it to a Buffer
@@ -113,7 +113,7 @@ In your encryption and decryption processes, ensure to handle errors gracefully:
 ```typescript
 async function safeEncrypt(data) {
   try {
-    const encrypted = await inkriptGuard.encryptData(data);
+    const encrypted = await inkriptGuard.encrypt(data);
     console.log("Successfully Encrypted:", encrypted);
   } catch (error) {
     console.error("Encryption Error:", error);
@@ -122,7 +122,7 @@ async function safeEncrypt(data) {
 
 async function safeDecrypt(encryptedData) {
   try {
-    const decrypted = await inkriptGuard.decryptData(encryptedData);
+    const decrypted = await inkriptGuard.decrypt(encryptedData);
     console.log("Successfully Decrypted:", decrypted);
   } catch (error) {
     console.error("Decryption Error:", error);
