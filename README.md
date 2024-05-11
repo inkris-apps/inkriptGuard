@@ -96,9 +96,9 @@ When decrypting files, the output will be a buffer or a hexadecimal string if th
 ```typescript
 async function decryptFile(encryptedData) {
   const decrypted = await inkriptGuard.decrypt(encryptedData);
-  console.log("Decrypted File Content (Buffer):", decrypted);
-  // If 'document' exists in the decrypted object and is a string,
-  // convert it to a Buffer
+
+  // If 'document' exists in the decrypted object and is a string, convert it to a Buffer
+  
     if (typeof decryptedObject.document === "string") {
       const documentBuffer = Buffer.from(decryptedObject.document, "hex");
       console.log("Document as Buffer:", documentBuffer);
