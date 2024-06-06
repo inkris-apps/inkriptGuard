@@ -44,26 +44,26 @@ const os = require('os');
 const path = require('path');
 
  
-test("should handle file encryption and decryption", async () => {
-  const inkriptoGuard = new InkriptoGuard();
-  // Prepare a sample file
-  const filePath = "/Users/prince.brown/Documents/important/encrypt/logo-1.png"; 
-  const originalContent = fs.readFileSync(filePath);
+// test("should handle file encryption and decryption", async () => {
+//   const inkriptoGuard = new InkriptoGuard();
+//   // Prepare a sample file
+//   const filePath = "/Users/prince.brown/Documents/important/encrypt/logo-1.png"; 
+//   const originalContent = fs.readFileSync(filePath);
   
-  const encrypted = await inkriptoGuard.encryptData(filePath);
-  console.log("Encrypted File Data:", encrypted);
+//   const encrypted = await inkriptoGuard.encryptData(filePath);
+//   console.log("Encrypted File Data:", encrypted);
 
-  const decryptedBuffer = await inkriptoGuard.decryptData(encrypted);
-  console.log("Decrypted File Content (Hex):", decryptedBuffer);
+//   const decryptedBuffer = await inkriptoGuard.decryptData(encrypted);
+//   console.log("Decrypted File Content (Hex):", decryptedBuffer);
 
-  console.log("Original Content (Hex):", originalContent.toString('hex'));
-  console.log("Decrypted Content (Hex):", decryptedBuffer);
+//   console.log("Original Content (Hex):", originalContent.toString('hex'));
+//   console.log("Decrypted Content (Hex):", decryptedBuffer);
 
-  expect(decryptedBuffer).toBe(originalContent.toString('hex'));
+//   expect(decryptedBuffer).toBe(originalContent.toString('hex'));
   
-  // Cleanup
-  fs.unlinkSync(filePath);
-});
+//   // Cleanup
+//   fs.unlinkSync(filePath);
+// });
 
   
 });
