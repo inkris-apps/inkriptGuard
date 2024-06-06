@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
   bump_version:
@@ -32,7 +31,6 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Commit changes before version bump" || echo "No changes to commit"
-
       - name: Bump version and push tag
         id: bump_version
         run: |
@@ -40,7 +38,6 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           npm version patch -m "Bump version to %s"
           git push --follow-tags
-
   publish:
     runs-on: ubuntu-latest
     needs: bump_version
@@ -49,11 +46,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js for npm
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-          registry-url: 'https://registry.npmjs.org/'
 
       - name: Install dependencies
         run: npm install
@@ -61,15 +57,9 @@ jobs:
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
-
-      - name: Set up Node.js for GitHub Packages
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-          registry-url: 'https://npm.pkg.github.com/'
+        run: npm publish
 
       - name: Publish to GitHub Packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish --access public --registry=https://npm.pkg.github.com/
+        run: npm publish --registry=https://npm.pkg.github.com/
