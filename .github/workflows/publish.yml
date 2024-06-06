@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  publish:
+  bump_version:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,10 +24,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Check current version
-        id: current_version
-        run: echo "Current version is $(jq -r .version package.json)"
 
       - name: Commit changes
         run: |
@@ -44,9 +40,21 @@ jobs:
           npm version patch -m "Bump version to %s"
           git push --follow-tags
 
-      - name: Check new version
-        id: new_version
-        run: echo "New version is $(jq -r .version package.json)"
+  publish:
+    runs-on: ubuntu-latest
+    needs: bump_version
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Publish to npm
         env:
