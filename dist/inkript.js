@@ -34,7 +34,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
 const zlib = __importStar(require("zlib"));
-const fs = __importStar(require("fs"));
+let fs = null;
+if (typeof window === "undefined") {
+    fs = require("fs");
+}
 class InkriptGuard {
     constructor() {
         this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key
@@ -45,7 +48,7 @@ class InkriptGuard {
     }
     // Preprocess data with compression and a unique transformation for non-binary data
     preprocessData(data) {
-        if (this.isFilePath(data)) {
+        if (fs && this.isFilePath(data)) {
             const fileBuffer = fs.readFileSync(data);
             return fileBuffer.toString("base64"); // Keep file content as base64
         }
@@ -110,6 +113,7 @@ class InkriptGuard {
     // Check if the input is a file path
     isFilePath(data) {
         return (typeof data === "string" &&
+            fs !== null &&
             fs.existsSync(data) &&
             fs.lstatSync(data).isFile());
     }
@@ -118,7 +122,7 @@ class InkriptGuard {
         return __awaiter(this, void 0, void 0, function* () {
             const iv = this.generateIV(); // Generate a new IV for each encryption
             try {
-                if (this.isFilePath(data)) {
+                if (fs && this.isFilePath(data)) {
                     const fileBuffer = fs.readFileSync(data);
                     const cipher = crypto.createCipheriv("aes-256-gcm", this.key, iv);
                     let encrypted = cipher.update(fileBuffer);
