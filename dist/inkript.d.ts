@@ -1,5 +1,6 @@
 declare class InkriptGuard {
     private key;
+    private fs;
     constructor();
     private generateIV;
     private preprocessData;

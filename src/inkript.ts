@@ -1,16 +1,20 @@
 import * as crypto from "crypto";
 import * as zlib from "zlib";
 
-let fs: typeof import("fs") | null = null;
-if (typeof window === "undefined") {
-  fs = require("fs");
-}
-
 class InkriptGuard {
   private key: Buffer;
+  private fs: typeof import("fs") | null = null;
 
   constructor() {
     this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key
+
+    if (typeof window === "undefined") {
+      import("fs").then(fsModule => {
+        this.fs = fsModule;
+      }).catch(err => {
+        console.error("Failed to load fs module:", err);
+      });
+    }
   }
 
   // Function to generate a random IV
@@ -20,8 +24,8 @@ class InkriptGuard {
 
   // Preprocess data with compression and a unique transformation for non-binary data
   private preprocessData(data: any): string {
-    if (fs && this.isFilePath(data)) {
-      const fileBuffer = fs.readFileSync(data);
+    if (this.fs && this.isFilePath(data)) {
+      const fileBuffer = this.fs.readFileSync(data);
       return fileBuffer.toString("base64"); // Keep file content as base64
     } else {
       let stringData =
@@ -92,9 +96,9 @@ class InkriptGuard {
   private isFilePath(data: string): boolean {
     return (
       typeof data === "string" &&
-      fs !== null &&
-      fs.existsSync(data) &&
-      fs.lstatSync(data).isFile()
+      this.fs !== null &&
+      this.fs.existsSync(data) &&
+      this.fs.lstatSync(data).isFile()
     );
   }
 
@@ -102,8 +106,8 @@ class InkriptGuard {
   public async encrypt(data: any): Promise<any> {
     const iv = this.generateIV(); // Generate a new IV for each encryption
     try {
-      if (fs && this.isFilePath(data)) {
-        const fileBuffer = fs.readFileSync(data);
+      if (this.fs && this.isFilePath(data)) {
+        const fileBuffer = this.fs.readFileSync(data);
         const cipher = crypto.createCipheriv("aes-256-gcm", this.key, iv);
         let encrypted = cipher.update(fileBuffer);
         encrypted = Buffer.concat([encrypted, cipher.final()]);

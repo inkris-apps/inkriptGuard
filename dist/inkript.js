@@ -34,13 +34,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
 const zlib = __importStar(require("zlib"));
-let fs = null;
-if (typeof window === "undefined") {
-    fs = require("fs");
-}
 class InkriptGuard {
     constructor() {
+        this.fs = null;
         this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key
+        if (typeof window === "undefined") {
+            Promise.resolve().then(() => __importStar(require("fs"))).then(fsModule => {
+                this.fs = fsModule;
+            }).catch(err => {
+                console.error("Failed to load fs module:", err);
+            });
+        }
     }
     // Function to generate a random IV
     generateIV() {
@@ -48,8 +52,8 @@ class InkriptGuard {
     }
     // Preprocess data with compression and a unique transformation for non-binary data
     preprocessData(data) {
-        if (fs && this.isFilePath(data)) {
-            const fileBuffer = fs.readFileSync(data);
+        if (this.fs && this.isFilePath(data)) {
+            const fileBuffer = this.fs.readFileSync(data);
             return fileBuffer.toString("base64"); // Keep file content as base64
         }
         else {
@@ -113,17 +117,17 @@ class InkriptGuard {
     // Check if the input is a file path
     isFilePath(data) {
         return (typeof data === "string" &&
-            fs !== null &&
-            fs.existsSync(data) &&
-            fs.lstatSync(data).isFile());
+            this.fs !== null &&
+            this.fs.existsSync(data) &&
+            this.fs.lstatSync(data).isFile());
     }
     // Unified encryption method for all data types
     encrypt(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const iv = this.generateIV(); // Generate a new IV for each encryption
             try {
-                if (fs && this.isFilePath(data)) {
-                    const fileBuffer = fs.readFileSync(data);
+                if (this.fs && this.isFilePath(data)) {
+                    const fileBuffer = this.fs.readFileSync(data);
                     const cipher = crypto.createCipheriv("aes-256-gcm", this.key, iv);
                     let encrypted = cipher.update(fileBuffer);
                     encrypted = Buffer.concat([encrypted, cipher.final()]);
