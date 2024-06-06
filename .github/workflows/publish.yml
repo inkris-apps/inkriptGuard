@@ -37,8 +37,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          NEW_VERSION=$(npm version patch -m "Bump version to %s")
+          npm version patch -m "Bump version to %s"
           git push --follow-tags
 
       - name: Publish to npm
