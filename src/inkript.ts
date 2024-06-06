@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 import * as zlib from "zlib";
-import * as fs from "fs";
+import fs from "fs";
 
 class InkriptGuard {
   private key: Buffer;
