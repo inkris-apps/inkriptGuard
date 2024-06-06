@@ -7,9 +7,15 @@ Usage documentation for the `InkriptGuard`:
 
 InkriptGuard is an encryption library that utilizes AES-256-GCM for secure data encryption and decryption. It supports both binary and textual data, with preprocessing and reverse preprocessing for text data to add an extra layer of security.
 
+InkriptGuard is an encryption library that utilizes AES-256-GCM for secure data encryption and decryption. It supports both binary and textual data, with preprocessing and reverse preprocessing for text data to add an extra layer of security.
+
+> **Note:** 
+> This library is intended for server-side use due to its reliance on the `fs` module for file system operations.
+
+
 ## Installation
 
-You can install the package via npm. Make sure you have the necessary dependencies.
+You can install the package via npm or yarn. Make sure you have the necessary dependencies.
 
 ### Using npm
 
@@ -32,7 +38,8 @@ import InkriptGuard from "@inkris-apps/inkripto";
 ```
 
 ### Basic Usage
-```
+
+```typescript
 async function secureDataOperation(data: any) {
   const inkriptGuard = new InkriptGuard();
 
@@ -47,19 +54,20 @@ async function secureDataOperation(data: any) {
   return decryptedData;
 }
 
+
 // Example usage
 const sensitiveData = { accountNumber: '1234567890', balance: 1000 };
+
 secureDataOperation(sensitiveData).then((result) => {
   console.log('Operation Result:', result);
 }).catch((error) => {
   console.error('Error in secure data operation:', error);
 });
-
 ```
 
 ### Encrypting Data
 
-You can encrypt various types of data including strings, numbers, objects, arrays, and files. 
+You can encrypt various types of data including strings, numbers, objects, arrays, and files.
 
 ```typescript
 const guard = new InkriptGuard();
@@ -129,7 +137,7 @@ const data = {
 
 ## License
 
-This project is licensed under the ISC License.
+This project is licensed under the MIT License.
 
 ## Contributing
 
@@ -142,3 +150,17 @@ If you encounter any issues, please create an issue on the [GitHub repository](h
 ## Repository
 
 You can find the source code at [GitHub Repository](https://github.com/inkris-apps/inkriptGuard).
+
+## Author
+
+Created by Prince Brown.
+```
+
+### Key Points Covered:
+1. **Server-Side Only**: Mentioned that the library works server-side only due to the use of `fs`.
+2. **Installation and Usage**: Provided installation instructions for both npm and yarn, along with detailed usage examples.
+3. **License**: Specified the MIT License.
+4. **Contributing and Issues**: Instructions for contributing and reporting issues.
+5. **Author**: Specified the author as Prince Brown.
+
+This README should provide clear instructions and information for users of your package.
