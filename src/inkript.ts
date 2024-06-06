@@ -9,16 +9,14 @@ class InkriptGuard {
     this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key
   }
 
-  // Function to generate a random IV
   private generateIV(): Buffer {
     return crypto.randomBytes(16); // IV is 16 bytes for AES
   }
 
-  // Preprocess data with compression and a unique transformation for non-binary data
   private preprocessData(data: any): string {
     if (this.isFilePath(data)) {
       const fileBuffer = fs.readFileSync(data);
-      return fileBuffer.toString("base64"); // Keep file content as base64
+      return fileBuffer.toString("base64");
     } else {
       let stringData =
         typeof data === "object" ||
@@ -32,12 +30,11 @@ class InkriptGuard {
     }
   }
 
-  // Reverse preprocessing considering the binary nature of certain data
   private reversePreprocessData(compressedData: string, isBinary: boolean = false): string | Buffer {
     try {
       const bufferData = Buffer.from(compressedData, "base64");
       if (isBinary) {
-        return bufferData; // Return as buffer for binary data
+        return bufferData;
       }
       const decompressedData = zlib.inflateSync(bufferData).toString();
       return decompressedData.split("").reverse().join("");
@@ -47,7 +44,6 @@ class InkriptGuard {
     }
   }
 
-  // Decrypt data with consideration for its type (binary vs. textual)
   public async decrypt(encryptedPackage: any): Promise<any> {
     try {
       if (typeof encryptedPackage === "object" && encryptedPackage !== null) {
@@ -62,7 +58,6 @@ class InkriptGuard {
           let decrypted = decipher.update(encryptedData, "base64");
           decrypted = Buffer.concat([decrypted, decipher.final()]);
 
-          // Check if it's binary using an explicit flag
           const isBinary = encryptedPackage.isBinary || false;
           return this.reversePreprocessData(
             decrypted.toString("utf8"),
@@ -84,7 +79,6 @@ class InkriptGuard {
     }
   }
 
-  // Check if the input is a file path
   private isFilePath(data: string): boolean {
     return (
       typeof data === "string" &&
@@ -93,9 +87,8 @@ class InkriptGuard {
     );
   }
 
-  // Unified encryption method for all data types
   public async encrypt(data: any): Promise<any> {
-    const iv = this.generateIV(); // Generate a new IV for each encryption
+    const iv = this.generateIV();
     try {
       if (this.isFilePath(data)) {
         const fileBuffer = fs.readFileSync(data);
