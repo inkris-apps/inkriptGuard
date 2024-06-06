@@ -1,2 +1,0 @@
-//npm.pkg.github.com/:_authToken=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
-@inkris-apps:registry=https://npm.pkg.github.com/

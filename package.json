@@ -1,6 +1,10 @@
 {
   "name": "@inkris-apps/inkripto",
+<<<<<<< HEAD
   "version": "1.0.5",
+=======
+  "version": "1.0.0",
+>>>>>>> 9b16636 (chore: Update npm registry URL and package version to 1.0.0)
   "description": "InkriptoGuard encryption library",
   "main": "inkript.ts",
   "scripts": {
@@ -17,7 +21,8 @@
   },
   "homepage": "https://github.com/inkris-apps/inkriptGuard#readme",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
     "@types/chai": "^4.3.16",
@@ -29,5 +34,8 @@
     "ts-jest": "^29.1.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@inkris-apps/inkripto": "^1.0.0"
   }
 }
