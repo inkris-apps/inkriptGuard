@@ -161,6 +161,3 @@ Created by Prince Brown.
 2. **Installation and Usage**: Provided installation instructions for both npm and yarn, along with detailed usage examples.
 3. **License**: Specified the MIT License.
 4. **Contributing and Issues**: Instructions for contributing and reporting issues.
-5. **Author**: Specified the author as Prince Brown.
-
-This README should provide clear instructions and information for users of your package.
