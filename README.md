@@ -1,137 +1,118 @@
-Usage documentation for the `InkriptGuard` class:
+
+Usage documentation for the `InkriptGuard`:
 
 ---
 
-# InkriptGuard Usage Documentation
+# InkriptGuard
 
-The `InkriptGuard` class provides methods for encrypting and decrypting data using AES-256-GCM encryption. This class handles both text and binary data, managing file content and other data types seamlessly.
+InkriptGuard is an encryption library that utilizes AES-256-GCM for secure data encryption and decryption. It supports both binary and textual data, with preprocessing and reverse preprocessing for text data to add an extra layer of security.
 
 ## Installation
 
-Before using `InkriptGuard`, ensure you have Node.js installed. You will also need the `crypto`, `zlib`, and `fs` modules, which are part of Node.js standard library.
+You can install the package via npm. Make sure you have the necessary dependencies.
 
-## Setup
+### Using npm
 
-First, ensure that the `InkriptGuard` class is properly imported into your project. If you have defined the class in a file named `InkriptGuard.ts`, you can import it as follows:
-
-```typescript
-import { InkriptGuard } from './InkriptGuard';
+```sh
+npm install @inkris-apps/inkripto
 ```
 
-## Instantiating the Class
+### Using yarn
 
-Create an instance of the `InkriptGuard` class to use its encryption and decryption functionalities:
-
-```typescript
-const inkriptGuard = new InkriptGuard();
+```sh
+yarn add @inkris-apps/inkripto
 ```
 
-## Encrypting Data
+## Usage
 
-You can encrypt strings, numbers, objects, arrays, and file contents. Here’s how to use the `encrypt` method:
-
-### Encrypting Text
+### Importing the Library
 
 ```typescript
-async function encryptText() {
-  const encrypted = await inkriptGuard.encrypt("Hello, world!");
-  console.log("Encrypted Text:", encrypted);
-}
-encryptText();
+import { InkriptGuard } from "@inkris-apps/inkripto";
 ```
 
-### Encrypting Objects
+### Encrypting Data
+
+You can encrypt various types of data including strings, numbers, objects, arrays, and files. 
 
 ```typescript
-async function encryptObject() {
-  const data = {
-    name: "Alice",
-    age: 30
+const guard = new InkriptGuard();
+
+(async () => {
+  const data = "Hello, World!";
+  const encryptedData = await guard.encrypt(data);
+  console.log("Encrypted Data:", encryptedData);
+})();
+```
+
+### Decrypting Data
+
+You can decrypt the data that was previously encrypted.
+
+```typescript
+(async () => {
+  const encryptedData = {
+    encryptedData: "BASE64_ENCRYPTED_DATA",
+    authTag: "BASE64_AUTH_TAG",
+    iv: "BASE64_IV"
   };
-  const encrypted = await inkriptGuard.encrypt(data);
-  console.log("Encrypted Object:", encrypted);
-}
-encryptObject();
-```
-
-### Encrypting Files
-
-For file encryption, pass the path of the file. Ensure the file exists at the specified path.
-
-```typescript
-async function encryptFile() {
-  const filePath = '/path/to/your/file.txt';
-  const encrypted = await inkriptGuard.encrypt(filePath);
-  console.log("Encrypted File:", encrypted);
-}
-encryptFile();
-```
-
-## Decrypting Data
-
-Use the `decrypt` method to decrypt data that was encrypted using `InkriptGuard`. Ensure the input to this method matches the structure returned by `encrypt`.
-
-### Decrypting Text
-
-```typescript
-async function decryptText(encryptedData) {
-  const decrypted = await inkriptGuard.decrypt(encryptedData);
-  console.log("Decrypted Text:", decrypted);
-}
-```
-
-### Decrypting Objects
-
-```typescript
-async function decryptObject(encryptedData) {
-  const decrypted = await inkriptGuard.decrypt(encryptedData);
-  console.log("Decrypted Object:", decrypted);
-}
-```
-
-### Decrypting Files
-
-When decrypting files, the output will be a buffer or a hexadecimal string if the file was marked as binary during encryption.
-
-```typescript
-async function decryptFile(encryptedData) {
-  const decrypted = await inkriptGuard.decrypt(encryptedData);
-
-  // If 'document' exists in the decrypted object and is a string, convert it to a Buffer
   
-    if (typeof decryptedObject.document === "string") {
-      const documentBuffer = Buffer.from(decryptedObject.document, "hex");
-      console.log("Document as Buffer:", documentBuffer);
-    }
-}
+  const decryptedData = await guard.decrypt(encryptedData);
+  console.log("Decrypted Data:", decryptedData);
+})();
 ```
 
-## Error Handling
+### Handling Files
 
-In your encryption and decryption processes, ensure to handle errors gracefully:
+To encrypt and decrypt files, provide the file path to the `encrypt` method. The library will handle reading the file, encrypting its contents, and returning the encrypted data.
 
 ```typescript
-async function safeEncrypt(data) {
-  try {
-    const encrypted = await inkriptGuard.encrypt(data);
-    console.log("Successfully Encrypted:", encrypted);
-  } catch (error) {
-    console.error("Encryption Error:", error);
-  }
-}
+const filePath = "/path/to/your/file.txt";
 
-async function safeDecrypt(encryptedData) {
-  try {
-    const decrypted = await inkriptGuard.decrypt(encryptedData);
-    console.log("Successfully Decrypted:", decrypted);
-  } catch (error) {
-    console.error("Decryption Error:", error);
-  }
-}
+(async () => {
+  const encryptedFile = await guard.encrypt(filePath);
+  console.log("Encrypted File:", encryptedFile);
+
+  const decryptedFile = await guard.decrypt(encryptedFile);
+  console.log("Decrypted File:", decryptedFile.toString());
+})();
 ```
 
-This documentation should guide you through the basic functionalities of the `InkriptGuard` class for your encryption and decryption needs.
+### Encrypting and Decrypting Objects
 
---- 
+You can encrypt and decrypt complex objects. The library will recursively encrypt/decrypt each field in the object.
 
-This guide covers typical use cases you might encounter while integrating encryption into your application using the `InkriptGuard` class.
+```typescript
+const data = {
+  name: "Alice",
+  age: 30,
+  address: {
+    street: "123 Main St",
+    city: "Wonderland"
+  }
+};
+
+(async () => {
+  const encryptedObject = await guard.encrypt(data);
+  console.log("Encrypted Object:", encryptedObject);
+
+  const decryptedObject = await guard.decrypt(encryptedObject);
+  console.log("Decrypted Object:", decryptedObject);
+})();
+```
+
+## License
+
+This project is licensed under the ISC License.
+
+## Contributing
+
+Feel free to contribute to the project by opening issues or submitting pull requests. For major changes, please open an issue first to discuss what you would like to change.
+
+## Issues
+
+If you encounter any issues, please create an issue on the [GitHub repository](https://github.com/inkris-apps/inkriptGuard/issues).
+
+## Repository
+
+You can find the source code at [GitHub Repository](https://github.com/inkris-apps/inkriptGuard).

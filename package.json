@@ -1,14 +1,25 @@
 {
-  "name": "inkripto",
+  "name": "@inkris-apps/inkripto",
   "version": "1.0.0",
-  "description": "",
-  "main": "InkriptoGuard.test.js",
+  "description": "InkriptoGuard encryption library",
+  "main": "inkript.ts",
   "scripts": {
     "test": "jest"
   },
-  "author": "",
+  "author": "inkris-apps",
   "license": "ISC",
   "dependencies": {
     "jest": "^29.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/inkris-apps/inkriptGuard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/inkris-apps/inkriptGuard/issues"
+  },
+  "homepage": "https://github.com/inkris-apps/inkriptGuard#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
