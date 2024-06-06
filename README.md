@@ -31,6 +31,34 @@ yarn add @inkris-apps/inkripto
 import { InkriptGuard } from "@inkris-apps/inkripto";
 ```
 
+### Basic Usage
+```
+import { InkriptGuard } from './InkriptGuard';
+
+async function secureDataOperation(data: any) {
+  const inkriptGuard = new InkriptGuard();
+
+  // Encrypt the data
+  const encryptedData = await inkriptGuard.encrypt(data);
+  console.log('Encrypted Data:', encryptedData);
+
+  // Decrypt the data
+  const decryptedData = await inkriptGuard.decrypt(encryptedData);
+  console.log('Decrypted Data:', decryptedData);
+
+  return decryptedData;
+}
+
+// Example usage
+const sensitiveData = { accountNumber: '1234567890', balance: 1000 };
+secureDataOperation(sensitiveData).then((result) => {
+  console.log('Operation Result:', result);
+}).catch((error) => {
+  console.error('Error in secure data operation:', error);
+});
+
+```
+
 ### Encrypting Data
 
 You can encrypt various types of data including strings, numbers, objects, arrays, and files. 
