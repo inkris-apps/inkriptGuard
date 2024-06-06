@@ -1,6 +1,6 @@
 {
   "name": "inkripto",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "InkriptoGuard encryption library",
   "main": "dist/inkript.js",
   "scripts": {
@@ -22,11 +22,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-
     "@types/jest": "^29.5.12",
-
     "jest": "^29.7.0",
-
     "ts-jest": "^29.1.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
