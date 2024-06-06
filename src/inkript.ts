@@ -1,6 +1,10 @@
 import * as crypto from "crypto";
 import * as zlib from "zlib";
-import fs from "fs";
+
+let fs: typeof import("fs") | null = null;
+if (typeof window === "undefined") {
+  fs = require("fs");
+}
 
 class InkriptGuard {
   private key: Buffer;
@@ -16,7 +20,7 @@ class InkriptGuard {
 
   // Preprocess data with compression and a unique transformation for non-binary data
   private preprocessData(data: any): string {
-    if (this.isFilePath(data)) {
+    if (fs && this.isFilePath(data)) {
       const fileBuffer = fs.readFileSync(data);
       return fileBuffer.toString("base64"); // Keep file content as base64
     } else {
@@ -88,6 +92,7 @@ class InkriptGuard {
   private isFilePath(data: string): boolean {
     return (
       typeof data === "string" &&
+      fs !== null &&
       fs.existsSync(data) &&
       fs.lstatSync(data).isFile()
     );
@@ -97,7 +102,7 @@ class InkriptGuard {
   public async encrypt(data: any): Promise<any> {
     const iv = this.generateIV(); // Generate a new IV for each encryption
     try {
-      if (this.isFilePath(data)) {
+      if (fs && this.isFilePath(data)) {
         const fileBuffer = fs.readFileSync(data);
         const cipher = crypto.createCipheriv("aes-256-gcm", this.key, iv);
         let encrypted = cipher.update(fileBuffer);
