@@ -32,7 +32,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InkriptGuard = void 0;
 const crypto = __importStar(require("crypto"));
 const zlib = __importStar(require("zlib"));
 const fs = __importStar(require("fs"));
@@ -40,13 +39,15 @@ class InkriptGuard {
     constructor() {
         this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key
     }
+    // Function to generate a random IV
     generateIV() {
         return crypto.randomBytes(16); // IV is 16 bytes for AES
     }
+    // Preprocess data with compression and a unique transformation for non-binary data
     preprocessData(data) {
         if (this.isFilePath(data)) {
             const fileBuffer = fs.readFileSync(data);
-            return fileBuffer.toString("base64");
+            return fileBuffer.toString("base64"); // Keep file content as base64
         }
         else {
             let stringData = typeof data === "object" ||
@@ -58,11 +59,12 @@ class InkriptGuard {
             return zlib.deflateSync(stringData).toString("base64");
         }
     }
+    // Reverse preprocessing considering the binary nature of certain data
     reversePreprocessData(compressedData, isBinary = false) {
         try {
             const bufferData = Buffer.from(compressedData, "base64");
             if (isBinary) {
-                return bufferData;
+                return bufferData; // Return as buffer for binary data
             }
             const decompressedData = zlib.inflateSync(bufferData).toString();
             return decompressedData.split("").reverse().join("");
@@ -72,6 +74,7 @@ class InkriptGuard {
             return Buffer.from(compressedData, "base64");
         }
     }
+    // Decrypt data with consideration for its type (binary vs. textual)
     decrypt(encryptedPackage) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -82,6 +85,7 @@ class InkriptGuard {
                         decipher.setAuthTag(Buffer.from(authTag, "base64"));
                         let decrypted = decipher.update(encryptedData, "base64");
                         decrypted = Buffer.concat([decrypted, decipher.final()]);
+                        // Check if it's binary using an explicit flag
                         const isBinary = encryptedPackage.isBinary || false;
                         return this.reversePreprocessData(decrypted.toString("utf8"), isBinary);
                     }
@@ -103,14 +107,16 @@ class InkriptGuard {
             }
         });
     }
+    // Check if the input is a file path
     isFilePath(data) {
         return (typeof data === "string" &&
             fs.existsSync(data) &&
             fs.lstatSync(data).isFile());
     }
+    // Unified encryption method for all data types
     encrypt(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const iv = this.generateIV();
+            const iv = this.generateIV(); // Generate a new IV for each encryption
             try {
                 if (this.isFilePath(data)) {
                     const fileBuffer = fs.readFileSync(data);
@@ -154,4 +160,4 @@ class InkriptGuard {
         });
     }
 }
-exports.InkriptGuard = InkriptGuard;
+exports.default = InkriptGuard;

@@ -8,4 +8,4 @@ declare class InkriptGuard {
     private isFilePath;
     encrypt(data: any): Promise<any>;
 }
-export { InkriptGuard };
+export default InkriptGuard;
