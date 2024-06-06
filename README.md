@@ -28,13 +28,11 @@ yarn add @inkris-apps/inkripto
 ### Importing the Library
 
 ```typescript
-import { InkriptGuard } from "@inkris-apps/inkripto";
+import InkriptGuard from "@inkris-apps/inkripto";
 ```
 
 ### Basic Usage
 ```
-import { InkriptGuard } from './InkriptGuard';
-
 async function secureDataOperation(data: any) {
   const inkriptGuard = new InkriptGuard();
 

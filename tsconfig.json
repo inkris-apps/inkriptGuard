@@ -9,7 +9,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "resolveJsonModule": true,
-    "declaration": true   // This generates .d.ts files
+    "declaration": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

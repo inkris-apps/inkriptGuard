@@ -128,4 +128,4 @@ class InkriptGuard {
   }
 }
 
-export { InkriptGuard };
+export default InkriptGuard;

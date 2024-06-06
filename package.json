@@ -5,32 +5,33 @@
     "main": "dist/inkript.js",
     "types": "dist/inkript.d.ts",
     "scripts": {
-        "build": "tsc",
-        "test": "jest"
+      "build": "tsc",
+      "test": "jest"
     },
     "author": "inkris-apps",
     "license": "ISC",
     "repository": {
-        "type": "git",
-        "url": "git+https://github.com/inkris-apps/inkriptGuard.git"
+      "type": "git",
+      "url": "git+https://github.com/inkris-apps/inkriptGuard.git"
     },
     "bugs": {
-        "url": "https://github.com/inkris-apps/inkriptGuard/issues"
+      "url": "https://github.com/inkris-apps/inkriptGuard/issues"
     },
     "homepage": "https://github.com/inkris-apps/inkriptGuard#readme",
     "publishConfig": {
-        "access": "public",
-        "registry": "https://registry.npmjs.org/"
+      "access": "public",
+      "registry": "https://registry.npmjs.org/"
     },
     "devDependencies": {
-        "@types/chai": "^4.3.16",
-        "@types/jest": "^29.5.12",
-        "@types/mocha": "^10.0.6",
-        "chai": "^5.1.1",
-        "jest": "^29.7.0",
-        "mocha": "^10.4.0",
-        "ts-jest": "^29.1.4",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.4.5"
+      "@types/chai": "^4.3.16",
+      "@types/jest": "^29.5.12",
+      "@types/mocha": "^10.0.6",
+      "chai": "^5.1.1",
+      "jest": "^29.7.0",
+      "mocha": "^10.4.0",
+      "ts-jest": "^29.1.4",
+      "ts-node": "^10.9.2",
+      "typescript": "^5.4.5"
     }
-}
+  }
+  
