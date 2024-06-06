@@ -155,9 +155,3 @@ You can find the source code at [GitHub Repository](https://github.com/inkris-ap
 
 Created by Prince Brown.
 ```
-
-### Key Points Covered:
-1. **Server-Side Only**: Mentioned that the library works server-side only due to the use of `fs`.
-2. **Installation and Usage**: Provided installation instructions for both npm and yarn, along with detailed usage examples.
-3. **License**: Specified the MIT License.
-4. **Contributing and Issues**: Instructions for contributing and reporting issues.
