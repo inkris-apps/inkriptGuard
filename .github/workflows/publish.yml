@@ -25,6 +25,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Check current version
+        id: current_version
+        run: echo "Current version is $(jq -r .version package.json)"
+
       - name: Commit changes
         run: |
           git config --global user.name "github-actions[bot]"
@@ -37,9 +41,12 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          NEW_VERSION=$(npm version patch -m "Bump version to %s")
-          echo "New version: $NEW_VERSION"
+          npm version patch -m "Bump version to %s"
           git push --follow-tags
+
+      - name: Check new version
+        id: new_version
+        run: echo "New version is $(jq -r .version package.json)"
 
       - name: Publish to npm
         env:
