@@ -2,12 +2,14 @@ import * as crypto from "crypto";
 import * as zlib from "zlib";
 
 class InkriptGuard {
-  private key: Buffer;
-  private fs: typeof import("fs") | null = null;
+  private key: Buffer; // Key for AES encryption
+  private fs: typeof import("fs") | null = null; // File system module
 
   constructor() {
+
     this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key (256 bits)
 
+    // Load fs module only if it's not available in the browser
     if (typeof window === "undefined") {
       import("fs").then(fsModule => {
         this.fs = fsModule;
