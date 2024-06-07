@@ -34,7 +34,10 @@ jobs:
           fi
 
       - name: Bump version
-        run: npm version patch -m "Bump version to %s"
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          npm version patch -m "Bump version to %s"
 
       - name: Build the project
         run: npm run build
