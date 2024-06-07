@@ -1,21 +1,27 @@
-
-Usage documentation for the `InkriptGuard`:
-
----
-
 # InkriptGuard
 
-InkriptGuard is an encryption library that utilizes AES-256-GCM for secure data encryption and decryption. It supports both binary and textual data, with preprocessing and reverse preprocessing for text data to add an extra layer of security.
+InkriptGuard is an encryption library that utilizes AES-256-GCM for secure data encryption and decryption. It supports both binary and textual data, with preprocessing and reverse preprocessing for text data to add an extra layer of security. The library is designed for server-side use and requires no external dependencies, making it lightweight and easy to integrate.
 
-InkriptGuard is an encryption library that utilizes AES-256-GCM for secure data encryption and decryption. It supports both binary and textual data, with preprocessing and reverse preprocessing for text data to add an extra layer of security.
+> **Note:** This library is intended for server-side use due to its reliance on the `fs` module for file system operations.
 
-> **Note:** 
-> This library is intended for server-side use due to its reliance on the `fs` module for file system operations.
+## Use Cases
 
+- **Secure Data Transmission**: Encrypt sensitive data before sending it over the network.
+- **Data Storage**: Encrypt data before saving it to disk to prevent unauthorized access.
+- **File Encryption**: Securely encrypt files for safe storage and transmission.
+- **Object Encryption**: Encrypt complex objects, ensuring all fields are secure.
+
+## Why InkriptGuard?
+
+- **AES-256-GCM Encryption**: Provides robust security with authenticated encryption.
+- **0 Dependencies**: Lightweight and fast with no external dependencies.
+- **Flexible Data Handling**: Encrypts and decrypts strings, numbers, objects, arrays, and files.
+- **Preprocessing for Extra Security**: Adds an additional layer of security by compressing and transforming text data.
+- **Beginner Friendly**: Easy to use with clear documentation and examples.
 
 ## Installation
 
-You can install the package via npm or yarn. Make sure you have the necessary dependencies.
+You can install the package via npm or yarn.
 
 ### Using npm
 
@@ -37,7 +43,7 @@ yarn add @inkris-apps/inkripto
 import InkriptGuard from "@inkris-apps/inkripto";
 ```
 
-### Basic Usage
+### Basic Usage Example
 
 ```typescript
 async function secureDataOperation(data: any) {
@@ -54,20 +60,21 @@ async function secureDataOperation(data: any) {
   return decryptedData;
 }
 
-
 // Example usage
 const sensitiveData = { accountNumber: '1234567890', balance: 1000 };
 
-secureDataOperation(sensitiveData).then((result) => {
-  console.log('Operation Result:', result);
-}).catch((error) => {
-  console.error('Error in secure data operation:', error);
-});
+secureDataOperation(sensitiveData)
+  .then((result) => {
+    console.log('Operation Result:', result);
+  })
+  .catch((error) => {
+    console.error('Error in secure data operation:', error);
+  });
 ```
 
-### Encrypting Data
+### Encryption Examples
 
-You can encrypt various types of data including strings, numbers, objects, arrays, and files.
+#### Encrypting Strings
 
 ```typescript
 const guard = new InkriptGuard();
@@ -79,42 +86,7 @@ const guard = new InkriptGuard();
 })();
 ```
 
-### Decrypting Data
-
-You can decrypt the data that was previously encrypted.
-
-```typescript
-(async () => {
-  const encryptedData = {
-    encryptedData: "BASE64_ENCRYPTED_DATA",
-    authTag: "BASE64_AUTH_TAG",
-    iv: "BASE64_IV"
-  };
-  
-  const decryptedData = await guard.decrypt(encryptedData);
-  console.log("Decrypted Data:", decryptedData);
-})();
-```
-
-### Handling Files
-
-To encrypt and decrypt files, provide the file path to the `encrypt` method. The library will handle reading the file, encrypting its contents, and returning the encrypted data.
-
-```typescript
-const filePath = "/path/to/your/file.txt";
-
-(async () => {
-  const encryptedFile = await guard.encrypt(filePath);
-  console.log("Encrypted File:", encryptedFile);
-
-  const decryptedFile = await guard.decrypt(encryptedFile);
-  console.log("Decrypted File:", decryptedFile.toString());
-})();
-```
-
-### Encrypting and Decrypting Objects
-
-You can encrypt and decrypt complex objects. The library will recursively encrypt/decrypt each field in the object.
+#### Encrypting Objects
 
 ```typescript
 const data = {
@@ -129,9 +101,74 @@ const data = {
 (async () => {
   const encryptedObject = await guard.encrypt(data);
   console.log("Encrypted Object:", encryptedObject);
+})();
+```
 
+#### Encrypting Files
+
+```typescript
+const filePath = "/path/to/your/file.txt";
+
+(async () => {
+  const encryptedFile = await guard.encrypt(filePath);
+  console.log("Encrypted File:", encryptedFile);
+})();
+```
+
+### Decryption Examples
+
+#### Decrypting Strings
+
+```typescript
+const guard = new InkriptGuard();
+
+(async () => {
+  const encryptedData = {
+    encryptedData: "BASE64_ENCRYPTED_DATA",
+    authTag: "BASE64_AUTH_TAG",
+    iv: "BASE64_IV"
+  };
+
+  const decryptedData = await guard.decrypt(encryptedData);
+  console.log("Decrypted Data:", decryptedData);
+})();
+```
+
+#### Decrypting Objects
+
+```typescript
+const encryptedObject = {
+  name: {
+    encryptedData: "BASE64_ENCRYPTED_DATA",
+    authTag: "BASE64_AUTH_TAG",
+    iv: "BASE64_IV"
+  },
+  age: {
+    encryptedData: "BASE64_ENCRYPTED_DATA",
+    authTag: "BASE64_AUTH_TAG",
+    iv: "BASE64_IV"
+  }
+};
+
+(async () => {
   const decryptedObject = await guard.decrypt(encryptedObject);
   console.log("Decrypted Object:", decryptedObject);
+})();
+```
+
+#### Decrypting Files
+
+```typescript
+const encryptedFile = {
+  encryptedData: "BASE64_ENCRYPTED_FILE_DATA",
+  authTag: "BASE64_AUTH_TAG",
+  iv: "BASE64_IV",
+  isBinary: true
+};
+
+(async () => {
+  const decryptedFile = await guard.decrypt(encryptedFile);
+  console.log("Decrypted File:", decryptedFile.toString());
 })();
 ```
 
@@ -154,4 +191,5 @@ You can find the source code at [GitHub Repository](https://github.com/inkris-ap
 ## Author
 
 Created by Prince Brown.
-```
+
+For more information, visit our website: [Inkris](https://inkris.ca).
