@@ -38,20 +38,20 @@ jobs:
 
       - name: Sync versions
         run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           if [ "$GITHUB_VERSION" != "$NPM_VERSION" ]; then
             if [ "$(printf '%s\n' "$GITHUB_VERSION" "$NPM_VERSION" | sort -V | head -n1)" = "$GITHUB_VERSION" ]; then
               # GitHub version is behind, update it
               jq ".version=\"$NPM_VERSION\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
-              git config --global user.name "github-actions[bot]"
-              git config --global user.email "github-actions[bot]@users.noreply.github.com"
               git add package.json
-              git commit -m "Sync version with npm registry"
+              git commit -m "Sync version with npm registry" || echo "No changes to commit"
               git push origin main
             else
               # npm version is behind, bump it
               npm version patch -m "Bump version to %s"
-              git config --global user.name "github-actions[bot]"
-              git config --global user.email "github-actions[bot]@users.noreply.github.com"
+              git add -A
+              git commit -m "Commit changes before version bump" || echo "No changes to commit"
               git push origin main --follow-tags
               echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
               npm publish --access public
