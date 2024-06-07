@@ -6,7 +6,7 @@ class InkriptGuard {
   private fs: typeof import("fs") | null = null;
 
   constructor() {
-    this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key
+    this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key (256 bits)
 
     if (typeof window === "undefined") {
       import("fs").then(fsModule => {
