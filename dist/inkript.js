@@ -37,7 +37,7 @@ const zlib = __importStar(require("zlib"));
 class InkriptGuard {
     constructor() {
         this.fs = null;
-        this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key
+        this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key (256 bits)
         if (typeof window === "undefined") {
             Promise.resolve().then(() => __importStar(require("fs"))).then(fsModule => {
                 this.fs = fsModule;
