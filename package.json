@@ -1,6 +1,6 @@
 {
   "name": "@inkris-apps/inkripto",
-  "version": "1.0.21",
+  "version": "1.0.24",
   "description": "InkriptoGuard encryption library",
   "main": "dist/inkript.js",
   "types": "dist/inkript.d.ts",
@@ -33,5 +33,4 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
- 
 }
