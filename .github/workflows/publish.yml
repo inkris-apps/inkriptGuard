@@ -26,12 +26,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Update package version to match npm
+        run: |
+          CURRENT_VERSION=$(npm view @inkris-apps/inkripto version)
+          jq ".version=\"$CURRENT_VERSION\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
+
       - name: Commit changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Commit changes before version bump" || echo "No changes to commit"
+          git add package.json
+          git commit -m "Update version to match npm registry" || echo "No changes to commit"
+          git push origin main
 
       - name: Bump version and push tag
         id: bump_version
@@ -58,15 +64,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Configure npm to use the registry and set up auth
+      - name: Configure npm for npm registry
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: Publish to npm
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish to GitHub Packages
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish --access public --registry=https://npm.pkg.github.com/
