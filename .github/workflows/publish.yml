@@ -1,4 +1,4 @@
-name: Sync and Publish Package
+name: Sync Version with NPM
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   packages: write
 
 jobs:
-  sync_and_publish:
+  sync_version:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,9 +25,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Build
-        run: npm run build
 
       - name: Check GitHub version
         id: github_version
@@ -62,17 +59,3 @@ jobs:
             GITHUB_VERSION=$(jq -r '.version' package.json)
             NPM_VERSION=$(npm view @inkris-apps/inkripto version)
           done
-
-      - name: Finalize and publish to npm
-        run: |
-          GITHUB_VERSION=$(jq -r '.version' package.json)
-          NPM_VERSION=$(npm view @inkris-apps/inkripto version)
-          if [ "$GITHUB_VERSION" == "$NPM_VERSION" ]; then
-            echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-            npm publish --access public
-          else
-            echo "Versions do not match after synchronization!"
-            exit 1
-          fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
