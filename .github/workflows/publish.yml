@@ -1,4 +1,4 @@
-name: Publish Package
+name: Sync and Publish Package
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   packages: write
 
 jobs:
-  bump_version:
+  sync_and_publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,51 +26,54 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Check GitHub version
+        id: github_version
+        run: echo "GITHUB_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
+
+      - name: Check npm version
+        id: npm_version
+        run: |
+          NPM_VERSION=$(npm view @inkris-apps/inkripto version)
+          echo "NPM_VERSION=$NPM_VERSION" >> $GITHUB_ENV
+
+      - name: Sync versions
+        run: |
+          if [ "$GITHUB_VERSION" != "$NPM_VERSION" ]; then
+            if [ "$(printf '%s\n' "$GITHUB_VERSION" "$NPM_VERSION" | sort -V | head -n1)" = "$GITHUB_VERSION" ]; then
+              # GitHub version is behind, update it
+              jq ".version=\"$NPM_VERSION\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
+              git config --global user.name "github-actions[bot]"
+              git config --global user.email "github-actions[bot]@users.noreply.github.com"
+              git add package.json
+              git commit -m "Sync version with npm registry"
+              git push origin main
+            else
+              # npm version is behind, bump it
+              npm version patch -m "Bump version to %s"
+              git config --global user.name "github-actions[bot]"
+              git config --global user.email "github-actions[bot]@users.noreply.github.com"
+              git push origin main --follow-tags
+              echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+              npm publish --access public
+            fi
+          fi
+
       - name: Build
         run: npm run build
 
-      - name: Commit changes
+      - name: Ensure versions match
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Commit changes before version bump" || echo "No changes to commit"
-      - name: Bump version and push tag
-        id: bump_version
+          GITHUB_VERSION=$(jq -r '.version' package.json)
+          NPM_VERSION=$(npm view @inkris-apps/inkripto version)
+          if [ "$GITHUB_VERSION" != "$NPM_VERSION" ]; then
+            echo "Versions do not match after synchronization!"
+            exit 1
+          fi
+
+      - name: Finalize and publish to npm
+        if: always()
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          npm version patch -m "Bump version to %s"
-          git push --follow-tags
-  publish:
-    runs-on: ubuntu-latest
-    needs: bump_version
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: "16"
-      #     registry-url: "https://registry.npmjs.org"
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-      # - name: Configure npm to use the registry and set up auth
-      #   run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
-      # - name: Publish to npm
-      #   run: npm publish --access public
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish to GitHub Packages
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish --access public --registry=https://npm.pkg.github.com/
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
