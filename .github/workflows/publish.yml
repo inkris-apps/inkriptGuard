@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - non-exact-branch-name
   workflow_dispatch:
 
 permissions:
@@ -50,9 +49,9 @@ jobs:
               git push origin main
             else
               # npm version is behind, bump it
-              npm version patch -m "Bump version to %s"
               git add -A
               git commit -m "Commit changes before version bump" || echo "No changes to commit"
+              npm version patch -m "Bump version to %s"
               git push origin main --follow-tags
               echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
               npm publish --access public
