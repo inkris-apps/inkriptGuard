@@ -64,7 +64,6 @@ jobs:
           done
 
       - name: Finalize and publish to npm
-        if: always()
         run: |
           GITHUB_VERSION=$(jq -r '.version' package.json)
           NPM_VERSION=$(npm view @inkris-apps/inkripto version)
