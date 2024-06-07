@@ -190,6 +190,6 @@ You can find the source code at [GitHub Repository](https://github.com/inkris-ap
 
 ## Author
 
-Created by Prince Brown.
+Created by Prince Brown. [iWebDevelop](https://iwebdevelop.ca.ca).
 
 For more information, visit our website: [Inkris](https://inkris.ca).
