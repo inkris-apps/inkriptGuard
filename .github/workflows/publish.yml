@@ -1,4 +1,4 @@
-name: Sync Version with NPM
+name: Sync Version
 
 on:
   push:
@@ -26,36 +26,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check GitHub version
-        id: github_version
-        run: echo "GITHUB_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
+      - name: Build
+        run: npm run build
 
-      - name: Check npm version
-        id: npm_version
-        run: |
-          NPM_VERSION=$(npm view @inkris-apps/inkripto version)
-          echo "NPM_VERSION=$NPM_VERSION" >> $GITHUB_ENV
-
-      - name: Sync versions and push to GitHub
+      - name: Commit and push version
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          while [ "$GITHUB_VERSION" != "$NPM_VERSION" ]; do
-            echo "Synchronizing versions..."
-            if [ "$(printf '%s\n' "$GITHUB_VERSION" "$NPM_VERSION" | sort -V | head -n1)" = "$GITHUB_VERSION" ]; then
-              # GitHub version is behind, update it
-              jq ".version=\"$NPM_VERSION\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
-              git add package.json
-              git commit -m "Sync version with npm registry"
-              git push origin main
-            else
-              # npm version is behind, bump it
-              git add -A
-              git commit -m "Commit changes before version bump" || echo "No changes to commit"
-              npm version patch -m "Bump version to %s"
-              git push origin main --follow-tags
-            fi
-            sleep 5
-            GITHUB_VERSION=$(jq -r '.version' package.json)
-            NPM_VERSION=$(npm view @inkris-apps/inkripto version)
-          done
+          git add package.json
+          git commit -m "Ensure version in package.json is committed"
+          git push origin main
