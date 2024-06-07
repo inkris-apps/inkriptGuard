@@ -38,7 +38,7 @@ class InkriptGuard {
     constructor() {
         this.fs = null; // File system module
         this.key = crypto.randomBytes(32); // AES-256 requires a 32-byte key (256 bits)
-        // Load fs module only if it's not available in the browser
+        // Load fs module only if it's not available in the browser.
         if (typeof window === "undefined") {
             Promise.resolve().then(() => __importStar(require("fs"))).then(fsModule => {
                 this.fs = fsModule;
