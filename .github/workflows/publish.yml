@@ -31,21 +31,25 @@ jobs:
           CURRENT_VERSION=$(npm view @inkris-apps/inkripto version)
           jq ".version=\"$CURRENT_VERSION\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
 
-      - name: Commit and push synced version
+      - name: Commit synced version
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json
           git commit -m "Sync version with npm registry" || echo "No changes to commit"
-          git push origin main
+
+      - name: Push synced version
+        run: git push origin main
 
       - name: Bump version and push tag
         id: bump_version
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Commit changes before version bump" || echo "No changes to commit"
           npm version patch -m "Bump version to %s"
-          git push --follow-tags
+          git push origin main --follow-tags
 
   publish:
     runs-on: ubuntu-latest
