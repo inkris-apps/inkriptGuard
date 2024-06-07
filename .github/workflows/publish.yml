@@ -3,7 +3,8 @@ name: Publish Package
 on:
   push:
     branches:
-      - main
+      # - main
+      - non-existent-branch
   workflow_dispatch:
 
 permissions:
